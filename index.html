@@ -2484,9 +2484,10 @@ a:hover{color:var(--hot)}
 <div style="font-size:13px;font-weight:600;color:var(--sub)">{{ suggestSub }}</div>
 <button sc-camel-on-click="{{ openSuggest }}" style-active="transform:scale(.96)" style="margin-top:14px;padding:13px 22px;border-radius:999px;border:none;background:var(--pink);color:#fff;font-size:15px;font-weight:800;cursor:pointer;transition:transform .1s">Let's do it</button>
 </div>
+<button sc-camel-on-click="{{ openBuilder }}" style-active="transform:scale(.97)" style="padding:17px;border-radius:24px;border:1.5px dashed var(--line);background:var(--card);color:var(--pink);font-size:16px;font-weight:800;cursor:pointer;box-shadow:var(--sh);transition:transform .1s">✨ Make my own workout</button>
 <sc-for list="{{ library }}" as="w" hint-placeholder-count="8"><div sc-camel-on-click="{{ w.tap }}" style="border-radius:24px;padding:18px 20px;box-shadow:var(--sh);cursor:pointer;background:{{ w.bg }}">
 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-<div><div style="font-size:17px;font-weight:800;letter-spacing:-.01em">{{ w.name }}</div>
+<div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><div style="font-size:17px;font-weight:800;letter-spacing:-.01em">{{ w.name }}</div><sc-if value="{{ w.mine }}" hint-placeholder-val="{{ false }}"><span style="padding:3px 9px;border-radius:999px;background:var(--card);color:var(--pink);font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase">yours</span></sc-if></div>
 <div style="font-size:13px;font-weight:600;color:var(--sub);margin-top:4px">{{ w.min }} min · {{ w.type }} · {{ w.stars }}</div></div>
 <div style="width:36px;height:36px;flex:none;border-radius:999px;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--pink);font-weight:800">›</div>
 </div></div></sc-for>
@@ -2635,6 +2636,56 @@ a:hover{color:var(--hot)}
 <button sc-camel-on-click="{{ toggleTimer }}" style-active="transform:scale(.95)" style="padding:13px 20px;border-radius:999px;border:1.5px solid var(--line);background:var(--soft);color:var(--tx);font-size:14px;font-weight:800;cursor:pointer">{{ timerCta }}</button>
 </div>
 <button sc-camel-on-click="{{ finishWo }}" style-active="transform:scale(.97)" style="width:100%;margin-top:14px;padding:19px;border-radius:999px;border:none;background:var(--pink);color:#fff;font-size:18px;font-weight:800;cursor:pointer;box-shadow:0 10px 28px rgba(255,107,157,.36);transition:transform .1s">Done! 🎉</button>
+<sc-if value="{{ woIsMine }}" hint-placeholder-val="{{ false }}">
+<button sc-camel-on-click="{{ deleteWo }}" style="width:100%;margin-top:12px;padding:14px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--sub);font-size:14px;font-weight:700;cursor:pointer">Delete this workout</button>
+</sc-if>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showBuilder }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;z-index:65;background:var(--bg);overflow-y:auto;animation:sheetUp .38s cubic-bezier(.22,1,.36,1)">
+<div style="max-width:480px;margin:0 auto;padding:20px 20px 44px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+<button sc-camel-on-click="{{ closeBuilder }}" style-active="transform:scale(.94)" style="width:42px;height:42px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--tx);font-size:16px;font-weight:800;cursor:pointer">✕</button>
+<div style="font-size:13px;font-weight:800;color:var(--sub)">{{ bTotalLabel }}</div>
+</div>
+<div style="font-size:27px;font-weight:800;letter-spacing:-.025em;margin:16px 0 4px">Make your own</div>
+<div style="font-size:14px;font-weight:600;color:var(--sub);margin-bottom:18px;text-wrap:pretty">Name it, add your moves, and it sits in your list like all the others.</div>
+
+<div style="background:var(--card);border-radius:24px;padding:20px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:16px">
+<div><div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sub);margin-bottom:7px">Workout name</div>
+<input value="{{ bName }}" sc-camel-on-input="{{ onBName }}" placeholder="Sunday glutes" style="width:100%;padding:14px 16px;border-radius:16px;border:1.5px solid var(--line);background:var(--soft);color:var(--tx);font-size:16px;font-weight:700;outline:none;-webkit-appearance:none"></div>
+<div><div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sub);margin-bottom:7px">Vibe</div>
+<div style="display:flex;flex-wrap:wrap;gap:9px">
+<sc-for list="{{ bTypes }}" as="t" hint-placeholder-count="5"><button sc-camel-on-click="{{ t.tap }}" style-active="transform:scale(.96)" style="padding:11px 16px;border-radius:999px;border:1.5px solid {{ t.bd }};background:{{ t.bg }};color:{{ t.fg }};font-size:14px;font-weight:700;cursor:pointer;transition:all .2s">{{ t.label }}</button></sc-for>
+</div></div>
+</div>
+
+<div style="background:var(--card);border-radius:24px;padding:20px;box-shadow:var(--sh);margin-top:14px">
+<div style="font-size:17px;font-weight:800">Moves</div>
+<sc-if value="{{ bEmpty }}" hint-placeholder-val="{{ true }}"><div style="font-size:14px;font-weight:600;color:var(--sub);margin-top:8px">Nothing yet — add your first one below 👇</div></sc-if>
+<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">
+<sc-for list="{{ bList }}" as="e" hint-placeholder-count="3"><div style="display:flex;align-items:center;gap:12px;background:var(--soft);border-radius:16px;padding:13px 15px">
+<div style="width:26px;height:26px;flex:none;border-radius:999px;background:var(--card);color:var(--pink);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800">{{ e.n }}</div>
+<div style="flex:1;min-width:0;font-size:15px;font-weight:700">{{ e.name }}</div>
+<div style="font-size:13px;font-weight:800;color:var(--pink);white-space:nowrap">{{ e.dose }}</div>
+<button sc-camel-on-click="{{ e.remove }}" style-active="transform:scale(.9)" style="width:26px;height:26px;flex:none;border:none;background:transparent;color:var(--sub);font-size:15px;font-weight:800;cursor:pointer">✕</button>
+</div></sc-for>
+</div>
+<div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px">
+<input value="{{ bExName }}" sc-camel-on-input="{{ onBExName }}" placeholder="Squats" style="width:100%;padding:14px 16px;border-radius:16px;border:1.5px solid var(--line);background:var(--soft);color:var(--tx);font-size:16px;font-weight:700;outline:none;-webkit-appearance:none">
+<div style="display:flex;gap:9px">
+<input type="number" value="{{ bExVal }}" sc-camel-on-input="{{ onBExVal }}" placeholder="{{ bValPlaceholder }}" style="flex:1;min-width:0;padding:14px 14px;border-radius:16px;border:1.5px solid var(--line);background:var(--soft);color:var(--tx);font-size:16px;font-weight:700;outline:none;-webkit-appearance:none">
+<button sc-camel-on-click="{{ setUnitS }}" style-active="transform:scale(.95)" style="padding:0 14px;border-radius:16px;border:1.5px solid {{ uS.bd }};background:{{ uS.bg }};color:{{ uS.fg }};font-size:14px;font-weight:800;cursor:pointer;transition:all .2s;white-space:nowrap">sec</button>
+<button sc-camel-on-click="{{ setUnitM }}" style-active="transform:scale(.95)" style="padding:0 14px;border-radius:16px;border:1.5px solid {{ uM.bd }};background:{{ uM.bg }};color:{{ uM.fg }};font-size:14px;font-weight:800;cursor:pointer;transition:all .2s;white-space:nowrap">min</button>
+<button sc-camel-on-click="{{ setUnitR }}" style-active="transform:scale(.95)" style="padding:0 14px;border-radius:16px;border:1.5px solid {{ uR.bd }};background:{{ uR.bg }};color:{{ uR.fg }};font-size:14px;font-weight:800;cursor:pointer;transition:all .2s;white-space:nowrap">reps</button>
+</div>
+<button sc-camel-on-click="{{ addEx }}" style-active="transform:scale(.97)" style="padding:15px;border-radius:999px;border:1.5px dashed var(--line);background:var(--soft);color:var(--pink);font-size:15px;font-weight:800;cursor:pointer;transition:transform .1s">+ Add move</button>
+</div>
+</div>
+
+<button sc-camel-on-click="{{ saveBuilder }}" style-active="transform:scale(.97)" style="width:100%;margin-top:16px;padding:19px;border-radius:999px;border:none;background:var(--pink);color:#fff;font-size:18px;font-weight:800;cursor:pointer;box-shadow:0 10px 28px rgba(255,107,157,.36);transition:transform .1s">Save workout ✨</button>
 </div>
 </div>
 </sc-if>
@@ -2748,7 +2799,8 @@ class Component extends DCLogic {
     { id: 'w15', name: 'Bedtime Stretch', type: 'Stretch', min: 8, diff: 1, ex: [['Child\u2019s pose', '60s', 'Forehead down, jaw loose'], ['Butterfly', '60s', 'Round forward if it feels nice'], ['Supine twist', '45s each', 'Eyes closed'], ['Happy baby', '45s', 'Rock gently side to side'], ['Legs up the wall', '90s', 'Let the legs get light'], ['Deep breathing', '60s', 'In for four, out for six']] }
   ];
 
-  state = { ready: false, page: 'today', onb: 1, sheet: null, wo: null, timer: 0, running: false, toast: null, conf: 0, expW: false, conn: '', photoNote: '', photoImg: '', viewer: null, woDone: {}, logDate: '', data: null };
+  state = { ready: false, page: 'today', onb: 1, sheet: null, wo: null, timer: 0, running: false, toast: null, conf: 0, expW: false, conn: '', photoNote: '', photoImg: '', viewer: null, woDone: {}, logDate: '', data: null,
+    showBuilder: false, bName: '', bType: 'Body', bEx: [], bExName: '', bExVal: '', bUnit: 's' };
 
   shrink(file) {
     return new Promise(res => {
@@ -2777,7 +2829,7 @@ class Component extends DCLogic {
       onboarded: false, theme: 'light',
       profile: { age: 24, height: 165, weight: 50, goal: 47, days: 3, likes: ['Stretching', 'Bodyweight'], tracking: "I'll eyeball it in the app", protein: 80 },
       targets: { kcal: 1500, steps: 8000, water: 8, minutes: 20, sleep: 7.5 },
-      backend: { url: '', token: '' }, days: {}, photos: [], queue: []
+      backend: { url: '', token: '' }, days: {}, photos: [], queue: [], custom: []
     };
   }
 
@@ -2787,6 +2839,7 @@ class Component extends DCLogic {
     if (!data || !data.profile) data = this.blank();
     if (!data.queue) data.queue = [];
     if (!data.photos) data.photos = [];
+    if (!data.custom) data.custom = [];
     this.setState({ data, ready: true, logDate: this.today() });
     this.ticker = setInterval(() => { if (this.state.running) this.setState(s => ({ timer: s.timer + 1 })); }, 1000);
     window.addEventListener('online', this.flush);
@@ -2843,6 +2896,13 @@ class Component extends DCLogic {
       });
       if (r.photos) d.photos = r.photos.map(p => ({ date: p.date, note: p.photo_note || p.note || '' }));
       if (r.settings && r.settings.targets) d.targets = Object.assign(d.targets, r.settings.targets);
+      const cw = r.settings && r.settings.custom_workouts;
+      if (Array.isArray(cw)) {
+        if (!d.custom) d.custom = [];
+        const have = {};
+        d.custom.forEach(x => { if (x && x.id) have[x.id] = 1; });
+        cw.forEach(x => { if (x && x.id && x.ex && !have[x.id]) d.custom.push(x); });
+      }
     });
   };
 
@@ -2955,6 +3015,55 @@ class Component extends DCLogic {
     this.say('Exported 📄');
   };
 
+  syncCustom = () => {
+    this.post('saveSettings', { custom_workouts: (this.state.data && this.state.data.custom) || [] });
+  };
+
+  addEx = () => {
+    const name = (this.state.bExName || '').trim();
+    const val = parseFloat(this.state.bExVal);
+    if (!name) { this.say('Give the move a name'); return; }
+    const unit = this.state.bUnit;
+    if (!val || val <= 0) { this.say(unit === 'r' ? 'How many reps?' : 'How long does it take?'); return; }
+    const secs = unit === 'm' ? Math.round(val * 60) : unit === 'r' ? Math.round(val * 3) : Math.round(val);
+    const dose = unit === 'm' ? (val + ' min') : unit === 'r' ? (Math.round(val) + ' reps') : (Math.round(val) + 's');
+    this.setState(s => ({
+      bEx: s.bEx.concat([{ name, dose, secs }]),
+      bExName: '', bExVal: ''
+    }));
+  };
+
+  removeEx = (i) => {
+    this.setState(s => ({ bEx: s.bEx.filter((_, j) => j !== i) }));
+  };
+
+  saveBuilder = () => {
+    const name = (this.state.bName || '').trim();
+    const ex = this.state.bEx;
+    if (!name) { this.say('Name your workout first'); return; }
+    if (!ex.length) { this.say('Add at least one move'); return; }
+    const secs = ex.reduce((a, b) => a + (b.secs || 0), 0);
+    const w = {
+      id: 'c' + Date.now(), custom: true, name: name, type: this.state.bType,
+      min: Math.max(1, Math.round(secs / 60)), diff: 1,
+      ex: ex.map(e => [e.name, e.dose, ''])
+    };
+    this.up(d => { if (!d.custom) d.custom = []; d.custom.unshift(w); });
+    this.syncCustom();
+    this.setState({ showBuilder: false, bName: '', bType: 'Body', bEx: [], bExName: '', bExVal: '', bUnit: 's' });
+    this.burst();
+    this.say(name + ' is yours now ✨');
+  };
+
+  deleteWo = () => {
+    const w = this.state.wo;
+    if (!w || !w.custom) return;
+    this.up(d => { d.custom = (d.custom || []).filter(x => x.id !== w.id); });
+    this.syncCustom();
+    this.setState({ wo: null, running: false, timer: 0, woDone: {} });
+    this.say('Deleted');
+  };
+
   testConn = async () => {
     this.setState({ conn: 'Checking…' });
     const r = await this.post('ping', {});
@@ -3030,8 +3139,8 @@ class Component extends DCLogic {
 
     const tipIdx = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 864e5) % this.TIPS.length;
 
-    const library = this.LIB.map(w => Object.assign({}, w, {
-      bg: this.typeBg(w.type), stars: '⭐'.repeat(w.diff),
+    const library = ((d.custom || []).concat(this.LIB)).map(w => Object.assign({}, w, {
+      bg: this.typeBg(w.type), stars: '⭐'.repeat(w.diff || 1), mine: !!w.custom,
       tap: () => this.setState({ wo: this.woView(w), timer: 0, running: false, woDone: {} })
     }));
     const recent = Object.keys(d.days).sort().slice(-5).map(x => d.days[x].wtype).filter(Boolean);
@@ -3142,6 +3251,31 @@ class Component extends DCLogic {
       onSteps: e => this.patch({ steps: e.target.value }),
       onSleep: e => this.patch({ sleep: e.target.value }),
       saveDay: this.saveDay,
+
+      showBuilder: s.showBuilder,
+      openBuilder: () => this.setState({ showBuilder: true }),
+      closeBuilder: () => this.setState({ showBuilder: false }),
+      bName: s.bName,
+      onBName: e => this.setState({ bName: e.target.value }),
+      bTypes: ['Stretch', 'Yoga', 'Core', 'Body', 'Cardio'].map(t => Object.assign({ label: t, tap: () => this.setState({ bType: t }) }, sel(s.bType === t))),
+      bList: s.bEx.map((e, i) => ({ n: i + 1, name: e.name, dose: e.dose, remove: () => this.removeEx(i) })),
+      bEmpty: s.bEx.length === 0,
+      bExName: s.bExName,
+      onBExName: e => this.setState({ bExName: e.target.value }),
+      bExVal: s.bExVal,
+      onBExVal: e => this.setState({ bExVal: e.target.value }),
+      uS: sel(s.bUnit === 's'), uM: sel(s.bUnit === 'm'), uR: sel(s.bUnit === 'r'),
+      setUnitS: () => this.setState({ bUnit: 's' }),
+      setUnitM: () => this.setState({ bUnit: 'm' }),
+      setUnitR: () => this.setState({ bUnit: 'r' }),
+      bValPlaceholder: s.bUnit === 'r' ? '15' : s.bUnit === 'm' ? '2' : '45',
+      addEx: this.addEx,
+      saveBuilder: this.saveBuilder,
+      bTotalLabel: s.bEx.length
+        ? (s.bEx.length + (s.bEx.length === 1 ? ' move · ' : ' moves · ') + Math.max(1, Math.round(s.bEx.reduce((a, b) => a + (b.secs || 0), 0) / 60)) + ' min')
+        : 'new workout',
+      woIsMine: !!(s.wo && s.wo.custom),
+      deleteWo: this.deleteWo,
 
       suggestLine: 'How about ' + sug.name.toLowerCase() + ' today?',
       suggestSub: sug.min + ' min · ' + sug.type.toLowerCase() + ' · no equipment 🧘‍♀️',
